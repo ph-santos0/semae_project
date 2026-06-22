@@ -55,6 +55,14 @@ class ItemPedidoForm(forms.ModelForm):
         queryset=TipoProduto.objects.filter(ativo=True),
         label="Produto"
     )
+
     class Meta:
         model = ItemPedido
         fields = ['produto', 'quantidade']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['produto'].label_from_instance = (
+            lambda obj: f"{obj.nome} ({obj.unidade_medida}) - Estoque: {getattr(obj, 'total_estoque', 0)}"
+        )
